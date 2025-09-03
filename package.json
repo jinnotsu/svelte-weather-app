@@ -1,0 +1,36 @@
+{
+  "name": "svelte",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.1.1",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/google.maps": "^3.58.1",
+    "autoprefixer": "^10.4.21",
+    "cross-env": "^10.0.0",
+    "postcss": "^8.5.6",
+    "svelte": "^5.38.1",
+    "svelte-check": "^4.3.1",
+    "tailwindcss": "^4.1.12",
+    "typescript": "~5.8.3",
+    "vite": "^7.1.2"
+  },
+  "description": "This template should help get you started developing with Svelte and TypeScript in Vite.",
+  "main": "svelte.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^1.16.0",
+    "@googlemaps/js-api-loader": "^1.16.10"
+  }
+}

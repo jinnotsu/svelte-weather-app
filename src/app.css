@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* カスタムコンポーネントクラス */
+@layer components {
+  .weather-card {
+    @apply bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl p-4 md:p-6 border border-blue-200 shadow-sm;
+  }
+  
+  .weather-icon-container {
+    @apply w-10 h-10 flex-shrink-0;
+  }
+  
+  .weather-icon-img {
+    @apply w-full h-full object-contain filter drop-shadow-sm;
+  }
+  
+  .weather-emoji {
+    @apply text-3xl filter drop-shadow-sm;
+  }
+  
+  .temperature-main {
+    @apply text-2xl font-bold text-gray-800;
+  }
+  
+  .temperature-secondary {
+    @apply text-sm text-gray-600 font-medium;
+  }
+  
+  .api-badge {
+    @apply text-center mt-4 p-2 bg-blue-100 rounded-lg border-l-4 border-blue-400;
+  }
+  
+  .error-card {
+    @apply text-center p-4 md:p-6 text-red-600 bg-red-50 rounded-lg border border-red-200;
+  }
+  
+  .loading-card {
+    @apply text-center p-4 md:p-6 text-gray-500 animate-pulse;
+  }
+}
