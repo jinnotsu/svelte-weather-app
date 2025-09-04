@@ -1,6 +1,6 @@
 // 天気アプリケーション用の型定義
 
-export interface WikipediaInfo {
+export interface LocationInfo {
   title: string;
   extract: string;
   thumbnail?: {
@@ -19,9 +19,4 @@ export interface WeatherRankingItem {
   city: string;
   temp: number;
   humidity?: number; // APIから取得した湿度データ
-}
-
-export interface LocationClickEvent {
-  region: string;
-  city: string;
 }

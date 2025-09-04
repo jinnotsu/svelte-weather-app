@@ -74,7 +74,7 @@
 
   <!-- 都市比較パネル -->
   <div class="mb-8 p-4 main-panel-bg bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
-    <h2 class="text-center text-slate-800 dark:text-slate-300 font-bold mb-4">現在の都会の暑さは...</h2>
+    <h2 class="text-center text-slate-800 dark:text-slate-300 font-bold mb-4">いまの都会の暑さは...</h2>
     <div class="flex justify-around items-start text-center">
       <div class="flex flex-col items-center gap-1 w-24">
         <span class="font-bold text-lg text-slate-900 dark:text-slate-200">東京</span>
