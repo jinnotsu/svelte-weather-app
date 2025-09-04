@@ -29,6 +29,7 @@ declare module '$env/static/private' {
 	export const VITE_GOOGLE_MAPS_API_KEY: string;
 	export const VITE_GOOGLE_AI_API_KEY: string;
 	export const VITE_OPENWEATHER_API_KEY: string;
+	export const BLOB_READ_WRITE_TOKEN: string;
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
@@ -124,6 +125,7 @@ declare module '$env/dynamic/private' {
 		VITE_GOOGLE_MAPS_API_KEY: string;
 		VITE_GOOGLE_AI_API_KEY: string;
 		VITE_OPENWEATHER_API_KEY: string;
+		BLOB_READ_WRITE_TOKEN: string;
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
