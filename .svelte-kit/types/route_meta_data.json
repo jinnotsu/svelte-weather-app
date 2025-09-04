@@ -2,5 +2,8 @@
 	"/": [],
 	"/api/cache/[locationKey]": [
 		"src/routes/api/cache/[locationKey]/+server.ts"
+	],
+	"/api/tenki/amedas/ranking/low-temp.html": [
+		"src/routes/api/tenki/amedas/ranking/low-temp.html/+server.ts"
 	]
 }

@@ -26,5 +26,9 @@ dist-ssr
 
 copilot/
 temp-svelte/
+.github/chatmodes/
 
 src/lib/cache.json
+
+.svelte-kit/
+build/

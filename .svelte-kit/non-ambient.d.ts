@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/api" | "/api/cache" | "/api/cache/[locationKey]";
+		RouteId(): "/" | "/api" | "/api/cache" | "/api/cache/[locationKey]" | "/api/tenki" | "/api/tenki/amedas" | "/api/tenki/amedas/ranking" | "/api/tenki/amedas/ranking/low-temp.html";
 		RouteParams(): {
 			"/api/cache/[locationKey]": { locationKey: string }
 		};
@@ -35,9 +35,13 @@ declare module "$app/types" {
 			"/": { locationKey?: string };
 			"/api": { locationKey?: string };
 			"/api/cache": { locationKey?: string };
-			"/api/cache/[locationKey]": { locationKey: string }
+			"/api/cache/[locationKey]": { locationKey: string };
+			"/api/tenki": Record<string, never>;
+			"/api/tenki/amedas": Record<string, never>;
+			"/api/tenki/amedas/ranking": Record<string, never>;
+			"/api/tenki/amedas/ranking/low-temp.html": Record<string, never>
 		};
-		Pathname(): "/" | "/api" | "/api/" | "/api/cache" | "/api/cache/" | `/api/cache/${string}` & {} | `/api/cache/${string}/` & {};
+		Pathname(): "/" | "/api" | "/api/" | "/api/cache" | "/api/cache/" | `/api/cache/${string}` & {} | `/api/cache/${string}/` & {} | "/api/tenki" | "/api/tenki/" | "/api/tenki/amedas" | "/api/tenki/amedas/" | "/api/tenki/amedas/ranking" | "/api/tenki/amedas/ranking/" | "/api/tenki/amedas/ranking/low-temp.html" | "/api/tenki/amedas/ranking/low-temp.html/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): string & {};
 	}
