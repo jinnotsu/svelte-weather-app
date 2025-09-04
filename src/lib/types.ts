@@ -13,28 +13,12 @@ export interface WikipediaInfo {
   isGenerated?: boolean; // Geminiで生成されたかどうか
 }
 
-export interface WeatherData {
-  currentTemperature: number;
-  humidity: number;
-  weatherCondition: {
-    description: string;
-    iconUrl: string;
-    type: string;
-  };
-  isDaytime: boolean;
-  location: {
-    city: string;
-    region: string;
-    latitude: number;
-    longitude: number;
-  };
-}
-
 export interface WeatherRankingItem {
   rank: number;
   region: string;
   city: string;
   temp: number;
+  humidity?: number; // APIから取得した湿度データ
 }
 
 export interface LocationClickEvent {

@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,svelte}"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       animation: {

@@ -1,6 +1,57 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+/* 基本設定とアニメーション */
+html.dark { color-scheme: dark; }
+body {
+  font-family: sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.main-panel-bg {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.panel-fade-in {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* JavaScriptで動的に付与するactiveクラスのスタイル */
+.list-item.active {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  background-color: #dbeafe; /* blue-100 */
+  border-color: #93c5fd; /* blue-300 */
+}
+
+.dark .list-item.active {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background-color: #334155; /* slate-700 */
+  border-color: #475569; /* slate-600 */
+}
+
+.list-item.active .rank-badge {
+  color: #1d4ed8; /* blue-700 */
+}
+
+.dark .list-item.active .rank-badge {
+  color: #60a5fa; /* blue-400 */
+}
+
+/* Material Symbols アイコンの位置調整 */
+.material-symbols-outlined {
+  display: inline-flex !important;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+}
+
 /* カスタムコンポーネントクラス */
 @layer components {
   .weather-card {
