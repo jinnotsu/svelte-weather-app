@@ -473,7 +473,7 @@
 
   function getGoogleSearchUrl(): string {
     if (!selectedItem) return 'https://www.google.com/';
-    const searchQuery = `${selectedItem.city} ${selectedItem.region} 観光 避暑地`;
+    const searchQuery = `${selectedItem.city} ${selectedItem.region} 観光`;
     return `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
   }
 
@@ -528,19 +528,21 @@
         </div>
         <div>
           <div class="flex items-baseline gap-3">
-            <span class="font-bold text-2xl text-blue-600 dark:text-blue-400">#{selectedItem.rank}</span>
+            <span class="font-bold text-4xl text-blue-600 dark:text-blue-400">#{selectedItem.rank}</span>
             <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">{selectedItem.city}</h2>
           </div>
           <p class="text-lg text-slate-800 dark:text-slate-400 mb-4">{selectedItem.region}</p>
           <div class="flex items-end gap-6 mb-6">
             <div class="flex items-center text-sky-700 dark:text-sky-400 font-bold">
-              <span class="material-symbols-outlined text-3xl mr-1">thermostat</span>
-              <span class="text-4xl">{selectedItem.temp}</span>
+              <span class="material-symbols-outlined text-4xl mr-1">thermostat</span>
+              <span class="text-2xl">気温</span>
+              <span class="text-4xl ml-2">{selectedItem.temp}</span>
               <span class="text-2xl ml-1">°C</span>
             </div>
             <div class="flex items-center text-blue-500 dark:text-blue-400 font-bold">
-              <span class="material-symbols-outlined text-3xl mr-1">humidity_low</span>
-              <span class="text-4xl">{selectedItem.humidity || '-'}</span>
+              <span class="material-symbols-outlined text-4xl mr-1">humidity_low</span>
+              <span class="text-2xl">湿度</span>
+              <span class="text-4xl ml-2">{selectedItem.humidity || '-'}</span>
               <span class="text-2xl ml-1">%</span>
             </div>
           </div>
@@ -559,14 +561,18 @@
                 class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 shadow hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 <span class="material-symbols-outlined text-lg">search</span>
-                この地域を検索する
+                この地域をググる
               </a>
               <div class="flex items-center gap-2">
                 <a href={getTwitterShareUrl()} target="_blank" aria-label="Twitterでシェア" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                  <span class="material-symbols-outlined text-xl">share</span>
+                  <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
                 </a>
                 <a href={getFacebookShareUrl()} target="_blank" aria-label="Facebookでシェア" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                  <span class="material-symbols-outlined text-xl">share</span>
+                  <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
                 </a>
                 <button on:click={copyToClipboard} aria-label="クリップボードにコピー" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
                   <span class="material-symbols-outlined text-xl">content_copy</span>
@@ -606,7 +612,7 @@
     {#if updateTime}
       <div class="text-center text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center gap-2">
         <span class="material-symbols-outlined text-sm align-middle leading-none">database</span>
-        <span>Source tenki.jp 更新時刻: {updateTime}</span>
+        <span>Source by tenki.jp 更新時刻: {updateTime}</span>
       </div>
     {/if}
   {/if}
