@@ -9,7 +9,6 @@ export interface LocationInfo {
     height: number;
   };
   url: string;
-  foundVia?: string;
   isGenerated?: boolean; // Geminiで生成されたかどうか
 }
 

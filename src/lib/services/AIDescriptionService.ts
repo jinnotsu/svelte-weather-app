@@ -44,12 +44,8 @@ export class AIDescriptionService {
 地点: ${city}
 地域: ${region}
 
-簡潔な紹介文（200文字以内）
-
-回答は日本語で、自然で魅力的な文章にしてください。観光地として紹介するようなトーンで書いてください。避暑地としての魅力があれば含めてください。
-
-例:
-「美しい自然に囲まれた○○は、○○地方の代表的な観光地です。○○の特徴として○○が挙げられ、○○の○○として知られています。」`;
+簡潔な紹介文（50文字以内）
+`;
 
       if (!this.ai) {
         console.log('AIクライアントが初期化されていません');
@@ -67,7 +63,6 @@ export class AIDescriptionService {
           title: `${city} (${region})`,
           extract: generatedText,
           url: `https://www.google.com/search?q=${encodeURIComponent(`${city} ${region} 日本`)}`,
-          foundVia: 'Google Gemini AIで生成',
           isGenerated: true
         };
         

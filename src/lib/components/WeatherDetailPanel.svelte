@@ -36,9 +36,9 @@
 </script>
 
 {#if selectedItem}
-  <div id="detail-panel" class="main-panel-bg bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 md:p-8 flex flex-col panel-fade-in">
+  <div id="detail-panel" class="main-panel-bg bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-lg flex flex-col panel-fade-in">
     <!-- 地図表示 -->
-    <div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden mb-6 shadow-md bg-gradient-to-br from-blue-100 to-green-100 dark:from-blue-900 dark:to-green-900 flex items-center justify-center">
+    <div class="relative w-full aspect-[8/9] overflow-hidden rounded-t-xl flex items-center justify-center">
       {#if mapUrl && googleMapsApiKey}
         <iframe 
           src={mapUrl} 
@@ -59,7 +59,7 @@
     </div>
     
     <!-- 地域情報 -->
-    <div>
+    <div class="p-6">
       <div class="flex items-baseline gap-3">
         <span class="font-bold text-4xl text-blue-600 dark:text-blue-400">#{selectedItem.rank}</span>
         <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">{selectedItem.city}</h2>
@@ -67,18 +67,18 @@
       <p class="text-lg text-slate-800 dark:text-slate-400 mb-4">{selectedItem.region}</p>
       
       <!-- 気温・湿度表示 -->
-      <div class="flex items-end gap-6 mb-6">
-        <div class="flex items-center text-sky-700 dark:text-sky-400 font-bold">
-          <span class="material-symbols-outlined text-4xl mr-1">thermostat</span>
-          <span class="text-2xl">気温</span>
-          <span class="text-4xl ml-2">{selectedItem.temp}</span>
-          <span class="text-2xl ml-1">°C</span>
+      <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+        <div class="flex items-baseline text-sky-700 dark:text-sky-400 font-bold">
+          <span class="material-symbols-outlined text-3xl sm:text-4xl mr-1">thermostat</span>
+          <span class="text-xl sm:text-2xl">気温</span>
+          <span class="text-3xl sm:text-4xl ml-2">{selectedItem.temp}</span>
+          <span class="text-xl sm:text-2xl ml-1">°C</span>
         </div>
-        <div class="flex items-center text-blue-500 dark:text-blue-400 font-bold">
-          <span class="material-symbols-outlined text-4xl mr-1">humidity_low</span>
-          <span class="text-2xl">湿度</span>
-          <span class="text-4xl ml-2">{selectedItem.humidity || '-'}</span>
-          <span class="text-2xl ml-1">%</span>
+        <div class="flex items-baseline text-blue-500 dark:text-blue-400 font-bold">
+          <span class="material-symbols-outlined text-3xl sm:text-4xl mr-1">humidity_low</span>
+          <span class="text-xl sm:text-2xl">湿度</span>
+          <span class="text-3xl sm:text-4xl ml-2">{selectedItem.humidity || '-'}</span>
+          <span class="text-xl sm:text-2xl ml-1">%</span>
         </div>
       </div>
       
@@ -90,8 +90,8 @@
       {/if}
       
       <!-- シェア・検索ボタン -->
-      <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700 flex flex-col items-center gap-4">
-        <div class="flex items-center justify-center flex-wrap gap-4">
+      <div class="mt-8 border-t border-slate-200 dark:border-slate-700 flex flex-col items-center gap-4">
+        <div class="mt-6 flex items-center justify-center flex-wrap gap-4">
           <a 
             href={googleSearchUrl}
             target="_blank"
