@@ -1,22 +1,38 @@
 <script lang="ts">
-  import WeatherApp from '../lib/WeatherApp.svelte';
   import { onMount } from 'svelte';
 
   let isDarkMode = false;
   let isMenuOpen = false;
+  let WeatherApp: any = null;
+  let isAppLoading = true;
   let cityWeatherData: Record<string, {temp: number}> = {
     '東京': { temp: 35 },
     '大阪': { temp: 36 },
     '福岡': { temp: 34 }
   };
 
+  // WeatherAppコンポーネントの動的インポート
+  async function loadWeatherApp() {
+    if (!WeatherApp) {
+      const module = await import('../lib/WeatherApp.svelte');
+      WeatherApp = module.default;
+    }
+    return WeatherApp;
+  }
+
   // ダークモード管理
-  onMount(() => {
+  onMount(async () => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme') || 
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       applyTheme(savedTheme);
     }
+
+    // WeatherAppを遅延読み込み（コンテンツが表示された後）
+    setTimeout(async () => {
+      await loadWeatherApp();
+      isAppLoading = false;
+    }, 100);
   });
 
   function applyTheme(theme: string) {
@@ -183,8 +199,15 @@
     </div>
   </div>
 
-  <!-- WeatherApp コンポーネント -->
-  <WeatherApp on:cityWeatherUpdate={handleCityWeatherUpdate} />
+  <!-- WeatherApp コンポーネント（動的インポート） -->
+  {#if isAppLoading}
+    <div class="flex items-center justify-center gap-3 py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <span class="text-slate-600 dark:text-slate-400">天気データを読み込み中...</span>
+    </div>
+  {:else if WeatherApp}
+    <svelte:component this={WeatherApp} on:cityWeatherUpdate={handleCityWeatherUpdate} />
+  {/if}
 
   <footer class="text-center">
     <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-center gap-2">

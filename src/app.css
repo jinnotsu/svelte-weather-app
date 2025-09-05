@@ -22,13 +22,56 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Material Symbols フォールバックフォント定義（レイアウトシフト防止） */
+@font-face {
+  font-family: 'Material Symbols Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica'), local('sans-serif');
+  /* Material Symbolsの特性に合わせてsize-adjustを調整 */
+  size-adjust: 92%;
+  /* アイコンフォントの境界ボックスに近づけるための調整 */
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+}
+
 /* Material Symbols アイコンの位置調整とサイズ設定 */
 .material-symbols-outlined {
-  display: inline-flex !important;
+  /* フォント読み込み完了まで非表示にしてレイアウトシフトを防ぐ */
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
   vertical-align: middle;
   align-items: center;
   justify-content: center;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  /* フォールバックフォントを追加（レイアウトシフト防止） */
+  font-family: 'Material Symbols Outlined', 'Material Symbols Fallback', Arial, sans-serif;
+  /* アイコンが正方形になるよう幅と高さを統一 */
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+}
+
+/* フォント読み込み完了後の状態 */
+.fonts-loaded .material-symbols-outlined {
+  display: inline-flex !important;
+  opacity: 1;
+}
+
+/* フォールバック状態での代替表示（アクセシビリティ向上） */
+.material-symbols-outlined:before {
+  content: attr(aria-label);
+  font-family: Arial, sans-serif;
+  font-size: 0.75em;
+  font-weight: normal;
+  display: none;
+}
+
+/* フォントが読み込まれない場合の代替表示 */
+@supports not (font-variation-settings: normal) {
+  .material-symbols-outlined:before {
+    display: inline;
+  }
 }
 
 /* Material Icons のサイズをTailwindクラスに対応 */

@@ -2,7 +2,6 @@
   import { tick } from 'svelte';
   import type { WeatherRankingItem } from '../types';
   import type { WeatherDataService } from '../services/WeatherDataService';
-  import type { AIDescriptionService } from '../services/AIDescriptionService';
   import { 
     selectedItem, 
     showDetailPanel, 
@@ -14,8 +13,20 @@
   } from '../stores/weatherStore';
   
   export let weatherDataService: WeatherDataService;
-  export let aiDescriptionService: AIDescriptionService;
   export let googleMapsApiKey: string;
+
+  // 動的にインポートするサービス
+  let aiDescriptionService: any = null;
+
+  // AIDescriptionServiceの動的インポート
+  async function loadAIDescriptionService() {
+    if (!aiDescriptionService) {
+      const module = await import('../services/AIDescriptionService');
+      const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY;
+      aiDescriptionService = new module.AIDescriptionService(googleAiApiKey, weatherDataService);
+    }
+    return aiDescriptionService;
+  }
 
   // アイテムクリック時の処理
   export async function handleItemClick(item: WeatherRankingItem) {
@@ -66,11 +77,12 @@
       }
     }
     
-    // 説明文を非同期で取得
+    // 説明文を非同期で取得（動的インポート使用）
     isLoadingDescription.set(true);
     currentDescription.set('');
     try {
-      const description = await aiDescriptionService.getLocationDescription(item.city, item.region);
+      const aiService = await loadAIDescriptionService();
+      const description = await aiService.getLocationDescription(item.city, item.region);
       currentDescription.set(description);
     } catch (error) {
       console.error('説明文取得エラー:', error);

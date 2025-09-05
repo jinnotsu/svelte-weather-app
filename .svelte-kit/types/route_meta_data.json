@@ -1,5 +1,7 @@
 {
-	"/": [],
+	"/": [
+		"src/routes/+page.ts"
+	],
 	"/api/cache/[locationKey]": [
 		"src/routes/api/cache/[locationKey]/+server.ts"
 	],

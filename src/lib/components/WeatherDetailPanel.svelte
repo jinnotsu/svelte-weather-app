@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { WeatherRankingItem } from '../types';
-  import { ShareService } from '../services/ShareService';
   
   export let selectedItem: WeatherRankingItem | null = null;
   export let mapUrl: string = '';
@@ -12,12 +11,23 @@
   const dispatch = createEventDispatcher();
   
   let copyMessage = '';
+  let ShareService: any = null;
+
+  // ShareServiceの動的インポート
+  async function loadShareService() {
+    if (!ShareService) {
+      const module = await import('../services/ShareService');
+      ShareService = module.ShareService;
+    }
+    return ShareService;
+  }
   
   async function copyToClipboard() {
     if (!selectedItem) return;
     
     try {
-      const message = await ShareService.copyToClipboard(selectedItem);
+      const service = await loadShareService();
+      const message = await service.copyToClipboard(selectedItem);
       copyMessage = message;
       setTimeout(() => {
         copyMessage = '';
@@ -29,10 +39,37 @@
       }, 2000);
     }
   }
-  
-  $: googleSearchUrl = selectedItem ? ShareService.getGoogleSearchUrl(selectedItem) : 'https://www.google.com/';
-  $: twitterShareUrl = selectedItem ? ShareService.getTwitterShareUrl(selectedItem) : '';
-  $: facebookShareUrl = selectedItem ? ShareService.getFacebookShareUrl(selectedItem) : '';
+
+  // リアクティブな変数を関数に変更
+  async function getGoogleSearchUrl() {
+    if (!selectedItem) return 'https://www.google.com/';
+    const service = await loadShareService();
+    return service.getGoogleSearchUrl(selectedItem);
+  }
+
+  async function getTwitterShareUrl() {
+    if (!selectedItem) return '';
+    const service = await loadShareService();
+    return service.getTwitterShareUrl(selectedItem);
+  }
+
+  async function getFacebookShareUrl() {
+    if (!selectedItem) return '';
+    const service = await loadShareService();
+    return service.getFacebookShareUrl(selectedItem);
+  }
+
+  // リアクティブに URL を追跡する状態
+  let googleSearchUrl = '';
+  let twitterShareUrl = '';
+  let facebookShareUrl = '';
+
+  // selectedItem が変更されたときに URL を更新
+  $: if (selectedItem) {
+    getGoogleSearchUrl().then(url => googleSearchUrl = url);
+    getTwitterShareUrl().then(url => twitterShareUrl = url);
+    getFacebookShareUrl().then(url => facebookShareUrl = url);
+  }
 </script>
 
 {#if selectedItem}

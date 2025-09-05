@@ -29,4 +29,5 @@ temp-svelte/
 .github/chatmodes/
 
 .svelte-kit/
+.vercel/
 build/
