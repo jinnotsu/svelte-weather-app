@@ -13,15 +13,7 @@ export default defineConfig({
       brotliSize: true
     })
   ],
-  server: {
-    proxy: {
-      '/api/tenki': {
-        target: 'https://tenki.jp',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/tenki/, '')
-      }
-    }
-  },
+
   build: {
     rollupOptions: {
       output: {
