@@ -2,12 +2,8 @@ import type { WeatherRankingItem, LocationInfo } from '../types';
 import { amedasService } from './AmedasService';
 
 export class WeatherDataService {
-  private openWeatherApiKey: string;
-  private googleMapsApiKey: string;
-
-  constructor(openWeatherApiKey: string, googleMapsApiKey: string) {
-    this.openWeatherApiKey = openWeatherApiKey;
-    this.googleMapsApiKey = googleMapsApiKey;
+  constructor() {
+    // アメダスデータのみを使用するため、APIキーは不要
   }
 
   /**
@@ -27,7 +23,8 @@ export class WeatherDataService {
       const weatherData: WeatherRankingItem[] = ranking.map((item, index) => ({
         rank: index + 1,
         city: item.stationName,
-        temp: Math.round(item.temperature * 10) / 10 // 小数点第1位まで
+        temp: Math.round(item.temperature * 10) / 10, // 小数点第1位まで
+        humidity: item.humidity ? Math.round(item.humidity) : undefined // 湿度も含める
       }));
 
       const timestamp = new Date().toISOString();
@@ -72,125 +69,45 @@ export class WeatherDataService {
     }
   }
 
-  async getCoordinates(city: string): Promise<{lat: number, lng: number} | null> {
-    if (!this.googleMapsApiKey) {
-      console.error('Google Maps API key not configured');
-      return null;
-    }
-    
+  /**
+   * アメダスAPIから都市別の気温データを取得
+   */
+  async fetchCityWeatherData(): Promise<Record<string, {temp: number, humidity?: number}>> {
     try {
-      const query = encodeURIComponent(`${city}, Japan`);
-      const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${this.googleMapsApiKey}`;
-      
-      console.log('Geocoding URL:', geocodingUrl);
-      
-      const response = await fetch(geocodingUrl);
+      const response = await fetch('/api/temperature-ranking?limit=50&type=hottest');
       if (!response.ok) {
-        throw new Error(`Geocoding API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Geocoding Response:', data);
-      
-      if (data.status === 'OK' && data.results.length > 0) {
-        const location = data.results[0].geometry.location;
-        console.log(`✅ 座標取得成功 ${city}: lat=${location.lat}, lng=${location.lng}`);
-        return {
-          lat: location.lat,
-          lng: location.lng
-        };
-      } else {
-        console.error('Geocoding failed:', data.status, data.error_message);
-        return null;
-      }
-    } catch (error) {
-      console.error('座標取得エラー:', error);
-      return null;
-    }
-  }
-
-  async fetchLocationWeatherData(city: string): Promise<{temp: number, humidity: number} | null> {
-    if (!this.openWeatherApiKey) {
-      console.error('OpenWeatherMap API key not configured');
-      return null;
-    }
-    
-    try {
-      console.log(`=== ${city}の天気情報を取得中 ===`);
-      
-      // 1. 座標を取得
-      const coordinates = await this.getCoordinates(city);
-      if (!coordinates) {
-        console.error('座標の取得に失敗しました');
-        return null;
+        console.error('気温データの取得に失敗しました');
+        return {};
       }
 
-      // 2. OpenWeatherMap APIから天気情報を取得（座標ベース）
-      console.log('OpenWeatherMap APIで天気情報を取得中...');
-      
-      const openWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lng}&appid=${this.openWeatherApiKey}&units=metric&lang=ja`;
-      console.log('OpenWeather URL:', openWeatherUrl);
-      
-      const response = await fetch(openWeatherUrl);
-      console.log('OpenWeather Response Status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('OpenWeather API Error Response:', errorText);
-        throw new Error(`OpenWeather API error: ${response.status} - ${errorText}`);
+      const result = await response.json();
+      if (!result.success || !result.data) {
+        console.error('無効な気温データです');
+        return {};
       }
-      
-      const data = await response.json();
-      console.log('OpenWeather Data:', data);
-      
-      const result = {
-        temp: Math.round(data.main.temp * 10) / 10, // 小数点1位まで
-        humidity: data.main.humidity
-      };
-      
-      console.log(`✅ ${city}の天気データ取得成功:`, result);
-      return result;
-      
-    } catch (error) {
-      console.error(`${city}の天気データ取得エラー:`, error);
-      return null;
-    }
-  }
 
-  async fetchCityWeatherData(): Promise<Record<string, {temp: number, humidity: number}>> {
-    if (!this.openWeatherApiKey) {
-      console.log('OpenWeatherMap API key not configured');
-      return {};
-    }
+      // 特定の都市データを抽出
+      const targetCities = ['東京', '大阪', '福岡'];
+      const cityWeatherData: Record<string, {temp: number, humidity?: number}> = {};
 
-    const cities = [
-      { name: '東京', query: 'Tokyo,JP' },
-      { name: '大阪', query: 'Osaka,JP' },
-      { name: '福岡', query: 'Fukuoka,JP' }
-    ];
-
-    const cityWeatherData: Record<string, {temp: number, humidity: number}> = {};
-
-    try {
-      for (const city of cities) {
-        try {
-          const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.query}&appid=${this.openWeatherApiKey}&units=metric&lang=ja`);
-          if (response.ok) {
-            const data = await response.json();
-            cityWeatherData[city.name] = {
-              temp: Math.round(data.main.temp),
-              humidity: data.main.humidity
-            };
-            console.log(`✅ ${city.name}の天気データ取得成功:`, cityWeatherData[city.name]);
-          }
-        } catch (error) {
-          console.error(`${city.name}の天気データ取得エラー:`, error);
+      for (const city of targetCities) {
+        const stationData = result.data.find((item: any) => item.stationName === city);
+        if (stationData) {
+          cityWeatherData[city] = { 
+            temp: Math.round(stationData.temperature * 10) / 10,
+            humidity: stationData.humidity ? Math.round(stationData.humidity) : undefined
+          };
+          console.log(`✅ ${city}の気温データ取得成功: ${cityWeatherData[city].temp}℃, 湿度: ${cityWeatherData[city].humidity || 'N/A'}%`);
+        } else {
+          // データが見つからない場合はデフォルト値を設定
+          cityWeatherData[city] = { temp: 0 };
+          console.log(`❌ ${city}のデータが見つかりませんでした`);
         }
       }
-      
+
       return cityWeatherData;
     } catch (error) {
-      console.error('都市天気データ取得エラー:', error);
+      console.error('都市気温データの取得エラー:', error);
       return {};
     }
   }

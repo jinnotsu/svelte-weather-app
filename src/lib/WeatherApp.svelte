@@ -34,10 +34,9 @@
   // API keys
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY;
-  const openWeatherApiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
   
   // サービスの初期化
-  const weatherDataService = new WeatherDataService(openWeatherApiKey, googleMapsApiKey);
+  const weatherDataService = new WeatherDataService();
   
   // コンポーネントの参照
   let itemClickHandler: ItemClickHandler;
@@ -67,7 +66,6 @@
 <ApiConfigManager 
   {googleMapsApiKey}
   {googleAiApiKey}
-  {openWeatherApiKey}
 />
 
 <MainWeatherDataFetcher {weatherDataService} />

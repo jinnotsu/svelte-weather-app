@@ -4,8 +4,7 @@
 
 ### 📊 気象データ表示
 - 気象庁アメダスデータから最低気温ランキングを生成・表示
-- リアルタイムでのデータ更新
-- OpenWeather APIからのデータ取得
+- リアルタイムでのデータ更新（取得先準拠）
 
 ### 🗺️ インタラクティブ地図
 - Google Maps APIを使用した地域の地図表示
@@ -29,7 +28,8 @@
 
 ### 🔐 セキュリティ
 - サーバーサイドでのAPI呼び出し
-- CORS設定の適切な管理
+- SvelteKitデフォルトのCSRF保護
+
 
 ## 🛠️ Tech Stack
 
@@ -42,10 +42,11 @@
 ### Backend
 - Google Maps API
 - Google Gemini API
-- OpenWeather API
-- 気象庁公式アメダスデータ  (JSON format)
+- 気象庁アメダスデータ(JSON format)
 
-### Infrastructure & Deployment
+本アプリは気象庁が公開するアメダスデータを利用していますが、気象庁とは一切関係ありません。
+
+### Infrastructure
 - Vercel
 - Vercel Blob
 
@@ -61,7 +62,6 @@
 ```env
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 VITE_GOOGLE_AI_API_KEY=your_google_ai_api_key
-VITE_OPENWEATHER_API_KEY=your_openweather_api_key
 ```
 
 ### install & run

@@ -30,6 +30,7 @@ export interface TemperatureRanking {
   rank: number;
   stationName: string;
   temperature: number;
+  humidity?: number;
   lat: number;
   lon: number;
 }
@@ -197,11 +198,12 @@ export class AmedasService {
         return type === 'hottest' ? tempB - tempA : tempA - tempB;
       });
 
-      // 都道府県名を推定（簡易版）
+            // 都道府県名を推定（簡易版）
       const ranking: TemperatureRanking[] = sorted.slice(0, limit).map((obs, index) => ({
         rank: index + 1,
         stationName: obs.stationName,
         temperature: obs.temp!,
+        humidity: obs.humidity,
         lat: obs.lat,
         lon: obs.lon
       }));

@@ -4,7 +4,6 @@
   
   export let googleMapsApiKey: string;
   export let googleAiApiKey: string;
-  export let openWeatherApiKey: string;
 
   // API キーの検証
   onMount(() => {
@@ -15,10 +14,6 @@
     
     if (!googleMapsApiKey) {
       console.warn('Google Maps API key is not configured. Map functionality may be limited.');
-    }
-    
-    if (!openWeatherApiKey) {
-      console.warn('OpenWeather API key is not configured. Weather data functionality may be limited.');
     }
   });
 </script>
