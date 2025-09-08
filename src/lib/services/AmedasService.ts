@@ -39,6 +39,12 @@ export class AmedasService {
   private stationsCache: Map<string, AmedasStation> | null = null;
   private cacheExpiry: number = 0;
   private readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24時間
+  private observationsCache: AmedasObservation[] | null = null;
+  private observationsCacheExpiry: number = 0;
+  private readonly OBSERVATIONS_CACHE_DURATION = 5 * 60 * 1000; // 
+  
+  // CACHE_DURATION 観測所idのデータのみ
+  // OBSERVATIONS_CACHE_DURATION 気象データそのもの
   
   // 主要都市の定義（重複を避けるため、一箇所にまとめる）
   private readonly MAJOR_CITIES = ['44132', '62078', '82182'];
@@ -115,6 +121,13 @@ export class AmedasService {
    * 最新のアメダス観測データを取得
    */
   async getLatestObservations(): Promise<AmedasObservation[]> {
+    const now = Date.now();
+    
+    // キャッシュが有効な場合は返す
+    if (this.observationsCache && now < this.observationsCacheExpiry) {
+      return this.observationsCache;
+    }
+
     try {
       const [latestTime, stations] = await Promise.all([
         this.getLatestTime(),
@@ -170,6 +183,10 @@ export class AmedasService {
 
         observations.push(amedasObs);
       }
+
+      // キャッシュを更新
+      this.observationsCache = observations;
+      this.observationsCacheExpiry = now + this.OBSERVATIONS_CACHE_DURATION;
 
       return observations;
     } catch (error) {
