@@ -6,6 +6,9 @@
   
   const dispatch = createEventDispatcher();
   
+  // ランキング表示を20位までに制限
+  $: displayData = weatherData.filter(item => item.rank <= 20);
+  
   function handleItemClick(item: WeatherRankingItem) {
     dispatch('itemClick', item);
   }
@@ -15,7 +18,7 @@
   <h3 class="text-xl font-bold text-slate-900 dark:text-slate-200 mt-4 mb-2 pl-4">ランキング一覧</h3>
   <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 pl-4">地名をタップして詳細をみる</p>
   <div class="space-y-2 pr-2">
-    {#each weatherData as item}
+    {#each displayData as item}
       <button 
         class="w-full text-left p-4 flex items-center gap-4 rounded-lg border-2 border-transparent transition-all duration-300 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900 active:scale-95 focus:ring-2 focus:ring-blue-500"
         data-rank={item.rank}

@@ -12,13 +12,21 @@
     isLoadingCityWeather.set(true);
     
     try {
-      const result = await weatherDataService.fetchCityWeatherData();
-      cityWeatherData.update(current => ({ ...current, ...result }));
+      const { cityData } = await weatherDataService.fetchWeatherRanking(20);
+      
+      // humidityがundefinedの場合は0に設定してストアを更新
+      cityWeatherData.update(current => ({
+        ...current,
+        ...Object.fromEntries(
+          Object.entries(cityData).map(([city, data]) => [
+            city,
+            { temp: data.temp, humidity: data.humidity ?? 0 }
+          ])
+        )
+      }));
       
       // 親コンポーネントにデータを送信
-      cityWeatherData.subscribe(data => {
-        dispatch('cityWeatherUpdate', data);
-      })();
+      cityWeatherData.subscribe(data => dispatch('cityWeatherUpdate', data))();
     } catch (error) {
       console.error('都市天気データ取得エラー:', error);
     } finally {
