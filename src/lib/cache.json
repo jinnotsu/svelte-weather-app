@@ -1,65 +1,11 @@
 {
-  "鷲倉_福島県": {
+  "宇登呂": {
     "info": {
-      "title": "鷲倉 (福島県)",
-      "extract": "福島・鷲倉。原生林に抱かれた秘湯が、心と体を癒す安らぎの地。",
-      "url": "https://www.google.com/search?q=%E9%B7%B2%E5%80%89%20%E7%A6%8F%E5%B3%B6%E7%9C%8C%20%E6%97%A5%E6%9C%AC",
+      "title": "宇登呂",
+      "extract": "知床世界遺産宇登呂。流氷、野生動物、断崖絶壁。地球の息吹を感じる港。",
+      "url": "https://www.google.com/search?q=%E5%AE%87%E7%99%BB%E5%91%82%20%E6%97%A5%E6%9C%AC",
       "isGenerated": true
     },
-    "timestamp": 1757052672267
-  },
-  "奥日光_栃木県": {
-    "info": {
-      "title": "奥日光 (栃木県)",
-      "extract": "壮大な自然と温泉が織りなす高原リゾート。四季折々の絶景が訪れる人々を魅了する。",
-      "url": "https://www.google.com/search?q=%E5%A5%A5%E6%97%A5%E5%85%89%20%E6%A0%83%E6%9C%A8%E7%9C%8C%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757052686553
-  },
-  "羅臼_道東": {
-    "info": {
-      "title": "羅臼 (道東)",
-      "extract": "知床世界遺産の雄大な自然と、流氷クルーズで出会う野生動物。海の幸も絶品。",
-      "url": "https://www.google.com/search?q=%E7%BE%85%E8%87%BC%20%E9%81%93%E6%9D%B1%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757052701104
-  },
-  "知方学_道東": {
-    "info": {
-      "title": "知方学 (道東)",
-      "extract": "道東・知方学。手つかずの秘境で、満天の星と大自然に心癒される。",
-      "url": "https://www.google.com/search?q=%E7%9F%A5%E6%96%B9%E5%AD%A6%20%E9%81%93%E6%9D%B1%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757052876726
-  },
-  "紋別_道東": {
-    "info": {
-      "title": "紋別 (道東)",
-      "extract": "流氷砕氷船ガリンコ号で冬のオホーツク海へ。新鮮な海の幸も味わえる道東の港町。",
-      "url": "https://www.google.com/search?q=%E7%B4%8B%E5%88%A5%20%E9%81%93%E6%9D%B1%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757052923261
-  },
-  "草津_群馬県": {
-    "info": {
-      "title": "草津 (群馬県)",
-      "extract": "日本屈指の名湯、草津温泉。湯畑の迫力と良質な湯で、心と体を癒す旅へ。",
-      "url": "https://www.google.com/search?q=%E8%8D%89%E6%B4%A5%20%E7%BE%A4%E9%A6%AC%E7%9C%8C%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757053404492
-  },
-  "えりも岬_道南": {
-    "info": {
-      "title": "えりも岬 (道南)",
-      "extract": "太平洋へ雄々しく突き出す「風の岬」。荒ぶる波と強風が織りなす大自然の絶景。",
-      "url": "https://www.google.com/search?q=%E3%81%88%E3%82%8A%E3%82%82%E5%B2%AC%20%E9%81%93%E5%8D%97%20%E6%97%A5%E6%9C%AC",
-      "isGenerated": true
-    },
-    "timestamp": 1757056367038
+    "timestamp": 1757322187295
   }
 }

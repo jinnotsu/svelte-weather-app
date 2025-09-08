@@ -12,43 +12,37 @@
   } from '../stores/weatherStore';
   
   export let weatherDataService: WeatherDataService;
-
+  
   async function fetchMainWeatherData() {
     try {
-      statusMessage.set('気温データを取得中...');
+      statusMessage.set(`アメダスランキングを取得中...`);
       
-      const response = await fetch('/api/tenki/amedas/ranking/low-temp.html');
+      // アメダスサービスを使用して気温ランキングを取得
+      const result = await weatherDataService.fetchWeatherRanking(20, 'coolest');
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      statusMessage.set('データを処理中...');
       
-      const html = await response.text();
-      
-      statusMessage.set('データを解析中...');
-      
-      const rankings = weatherDataService.parseWeatherData(html);
-      const parsedUpdateTime = weatherDataService.parseUpdateTime(html);
-      
-      if (parsedUpdateTime) {
-        updateTime.set(parsedUpdateTime);
-      }
-      
-      if (rankings.length > 0) {
-        rankings.sort((a, b) => a.rank - b.rank);
-        const limitedData = rankings.slice(0, 20);
-        updateWeatherData(limitedData);
-        statusMessage.set(`${rankings.length}件のデータを取得しました`);
+      if (result.data.length > 0) {
+        updateWeatherData(result.data);
+        updateTime.set(result.timestamp);
+        statusMessage.set(`${result.data.length}件のアメダスデータを取得しました`);
+        console.log('✅ メインコンポーネント: アメダスデータ取得成功', result.data);
       } else {
-        // モックデータを使用
+        // フォールバック：モックデータを使用
         const mockData = weatherDataService.getMockWeatherData();
         updateWeatherData(mockData);
-        statusMessage.set('モックデータを表示中（データ解析に失敗）');
+        statusMessage.set('モックデータを表示中（アメダスデータの取得に失敗）');
+        console.log('⚠️ メインコンポーネント: モックデータを使用');
       }
       
     } catch (error) {
+      console.error('❌ メインコンポーネント: アメダスデータ取得エラー', error);
       errorMessage.set(`エラー: ${error instanceof Error ? error.message : String(error)}`);
-      statusMessage.set('データ取得に失敗しました');
+      statusMessage.set('アメダスデータ取得に失敗しました');
+      
+      // エラー時もモックデータを表示
+      const mockData = weatherDataService.getMockWeatherData();
+      updateWeatherData(mockData);
     } finally {
       setLoading(false);
     }
@@ -56,6 +50,13 @@
 
   onMount(() => {
     fetchMainWeatherData();
+    
+    // 10分ごとに自動更新
+    const updateInterval = setInterval(fetchMainWeatherData, 10 * 60 * 1000);
+    
+    return () => {
+      clearInterval(updateInterval);
+    };
   });
 </script>
 

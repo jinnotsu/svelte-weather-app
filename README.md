@@ -1,47 +1,76 @@
-# Svelte + TS + Vite
+# Svelte-Weather-App
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+## 🌟 Features
 
-## Recommended IDE Setup
+### 📊 気象データ表示
+- 気象庁アメダスデータから最低気温ランキングを生成・表示
+- リアルタイムでのデータ更新
+- OpenWeather APIからのデータ取得
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+### 🗺️ インタラクティブ地図
+- Google Maps APIを使用した地域の地図表示
+- 選択した地点の詳細位置情報
 
-## Need an official Svelte framework?
+### 🤖 AI機能
+- Google Gemini APIを使用した解説生成
+- データキャッシュによるAPI呼び出し削減
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+### 🎨 モダンUI/UX
+- モバイルファーストデザイン
+- ダークモード対応
+- Material Symbolsアイコン使用
 
-## Technical considerations
+### ⚡ パフォーマンス
+- Lighthouse Performance 97点 ![Lighthouse Screenshot](public/lighthouse.png)
+- 外部フォントの部分読み込みとレイアウトシフト防止
+- 外部サービスの事前DNS解決によるレスポンス向上(DNS Prefetch)
+- コンポーネントレベルでの遅延読み込み
+- rollup-plugin-visualizerによるバンドルサイズ解析・最適化
 
-**Why use this over SvelteKit?**
+### 🔐 セキュリティ
+- サーバーサイドでのAPI呼び出し
+- CORS設定の適切な管理
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+## 🛠️ Tech Stack
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+### Frontend
+- SvelteKit
+- TypeScript
+- Tailwind CSS
+- Vite
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+### Backend
+- Google Maps API
+- Google Gemini API
+- OpenWeather API
+- 気象庁公式アメダスデータ  (JSON format)
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+### Infrastructure & Deployment
+- Vercel
+- Vercel Blob
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+## 🚀 Setup
 
-**Why include `.vscode/extensions.json`?**
+### Prerequisites
+- Node.js v18 or higher
+- npm
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+### 環境変数設定
+`.env`ファイルを作成し、以下のAPIキーを設定してください。
 
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```env
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+VITE_GOOGLE_AI_API_KEY=your_google_ai_api_key
+VITE_OPENWEATHER_API_KEY=your_openweather_api_key
 ```
+
+### install & run
+```bash
+# 依存関係をインストール
+npm install
+# 開発サーバー起動
+npm run dev
+# ビルド
+npm run build
+```
+Vercelでデプロイする場合はVercel Blobを有効にしてください。

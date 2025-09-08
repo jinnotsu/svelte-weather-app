@@ -26,7 +26,7 @@
     mapUrl,
     currentDescription,
     isLoadingDescription,
-    isDataReady 
+    isDataReady
   } from './stores/weatherStore';
   
   const dispatch = createEventDispatcher();

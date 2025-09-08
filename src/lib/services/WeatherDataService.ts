@@ -1,4 +1,5 @@
 import type { WeatherRankingItem, LocationInfo } from '../types';
+import { amedasService } from './AmedasService';
 
 export class WeatherDataService {
   private openWeatherApiKey: string;
@@ -9,83 +10,44 @@ export class WeatherDataService {
     this.googleMapsApiKey = googleMapsApiKey;
   }
 
-  parseWeatherData(html: string): WeatherRankingItem[] {
-    const patterns = [
-      /(\d+)\.\[([^\]]+)\]\[([^\]]+)\]\s*(\d+\.\d+)℃/g,
-      /(\d+)\..*?\[([^\]]+)\].*?\[([^\]]+)\].*?(\d+\.\d+)℃/g,
-      />(\d+)\.<.*?class="pref">([^<]+)<.*?class="point">([^<]+)<.*?(\d+\.\d+)℃/g,
-      /(\d+)\.\s*([^0-9]+?)(\d+\.\d+)℃/g
-    ];
-    
-    for (let i = 0; i < patterns.length; i++) {
-      const regex = patterns[i];
-      regex.lastIndex = 0;
-      let tempRankings = [];
-      let match;
+  /**
+   * アメダスサービスを使用して気温ランキングを取得
+   */
+  async fetchWeatherRanking(limit: number = 10, type: 'hottest' | 'coolest' = 'coolest'): Promise<{
+    data: WeatherRankingItem[];
+    timestamp: string;
+  }> {
+    try {
+      console.log(`=== アメダス気温ランキングを取得中 (${type}, limit: ${limit}) ===`);
       
-      while ((match = regex.exec(html)) !== null && tempRankings.length < 20) {
-        try {
-          const [fullMatch, rank, regionOrText, cityOrEmpty, temp] = match;
-          
-          let region, city;
-          if (i === 2) {
-            region = (regionOrText || "").trim();
-            city = (cityOrEmpty || "").trim();
-          } else if (i === 3) {
-            const text = regionOrText.trim();
-            const parts = text.split(/[\[\]]+/).filter(s => s.trim());
-            region = parts[0] || "不明";
-            city = parts[1] || "不明";
-          } else {
-            region = (regionOrText || "").trim();
-            city = (cityOrEmpty || "").trim();
-          }
-          
-          const tempValue = parseFloat(temp);
-          const rankValue = parseInt(rank);
-          
-          if (!isNaN(tempValue) && !isNaN(rankValue)) {
-            tempRankings.push({ 
-              rank: rankValue, 
-              region: region || "不明", 
-              city: city || "不明", 
-              temp: tempValue 
-            });
-          }
-        } catch (parseError) {
-          // Ignore parse errors
-        }
-      }
+      // アメダスサービスから気温ランキングを取得
+      const ranking = await amedasService.getTemperatureRanking(limit, type);
       
-      if (tempRankings.length > 0) {
-        return tempRankings;
-      }
-    }
-    
-    return [];
-  }
+      // WeatherRankingItem形式に変換
+      const weatherData: WeatherRankingItem[] = ranking.map((item, index) => ({
+        rank: index + 1,
+        city: item.stationName,
+        temp: Math.round(item.temperature * 10) / 10 // 小数点第1位まで
+      }));
 
-  parseUpdateTime(html: string): string {
-    const timeRegex = /<time[^>]*class="date-time"[^>]*>([^<]+)<\/time>/i;
-    const match = html.match(timeRegex);
-    
-    if (match && match[1]) {
-      return match[1].trim();
+      const timestamp = new Date().toISOString();
+      
+      console.log(`✅ アメダス気温ランキング取得成功: ${weatherData.length}件`);
+      
+      return {
+        data: weatherData,
+        timestamp
+      };
+      
+    } catch (error) {
+      console.error('アメダス気温ランキング取得エラー:', error);
+      throw new Error(error instanceof Error ? error.message : 'アメダスデータの取得に失敗しました');
     }
-    
-    const datetimeRegex = /<time[^>]*datetime="([^"]+)"[^>]*class="date-time"[^>]*>([^<]+)<\/time>/i;
-    const datetimeMatch = html.match(datetimeRegex);
-    
-    if (datetimeMatch && datetimeMatch[2]) {
-      return datetimeMatch[2].trim();
-    }
-    
-    return '';
   }
 
   async getCachedLocationInfo(city: string, region: string): Promise<LocationInfo | null> {
     try {
-      const key = `${city}_${region}`.replace(/\s+/g, '_');
+      const key = region && region !== 'undefined' && region.trim() !== '' ? `${city}_${region}`.replace(/\s+/g, '_') : city.replace(/\s+/g, '_');
       const response = await fetch(`/api/cache/${key}`);
       if (!response.ok) return null;
       const data = await response.json();
@@ -96,9 +58,9 @@ export class WeatherDataService {
     }
   }
 
-  async setCachedLocationInfo(city: string, region: string, info: LocationInfo): Promise<void> {
+  async setCachedLocationInfo(city: string, info: LocationInfo): Promise<void> {
     try {
-      const key = `${city}_${region}`.replace(/\s+/g, '_');
+      const key = city.replace(/\s+/g, '_');
       const cacheData = { info, timestamp: Date.now() };
       await fetch(`/api/cache/${key}`, {
         method: 'POST',
@@ -110,14 +72,14 @@ export class WeatherDataService {
     }
   }
 
-  async getCoordinates(city: string, region: string): Promise<{lat: number, lng: number} | null> {
+  async getCoordinates(city: string): Promise<{lat: number, lng: number} | null> {
     if (!this.googleMapsApiKey) {
       console.error('Google Maps API key not configured');
       return null;
     }
     
     try {
-      const query = encodeURIComponent(`${city}, ${region}, Japan`);
+      const query = encodeURIComponent(`${city}, Japan`);
       const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${this.googleMapsApiKey}`;
       
       console.log('Geocoding URL:', geocodingUrl);
@@ -147,17 +109,17 @@ export class WeatherDataService {
     }
   }
 
-  async fetchLocationWeatherData(city: string, region: string): Promise<{temp: number, humidity: number} | null> {
+  async fetchLocationWeatherData(city: string): Promise<{temp: number, humidity: number} | null> {
     if (!this.openWeatherApiKey) {
       console.error('OpenWeatherMap API key not configured');
       return null;
     }
     
     try {
-      console.log(`=== ${city} (${region})の天気情報を取得中 ===`);
+      console.log(`=== ${city}の天気情報を取得中 ===`);
       
       // 1. 座標を取得
-      const coordinates = await this.getCoordinates(city, region);
+      const coordinates = await this.getCoordinates(city);
       if (!coordinates) {
         console.error('座標の取得に失敗しました');
         return null;

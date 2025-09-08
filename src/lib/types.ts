@@ -14,7 +14,7 @@ export interface LocationInfo {
 
 export interface WeatherRankingItem {
   rank: number;
-  region: string;
+  region?: string;
   city: string;
   temp: number;
   humidity?: number; // APIから取得した湿度データ

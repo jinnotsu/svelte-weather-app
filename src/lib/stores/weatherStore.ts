@@ -8,6 +8,9 @@ export const errorMessage = writable<string>('');
 export const statusMessage = writable<string>('');
 export const updateTime = writable<string>('');
 
+// ランキングタイプの管理
+export const rankingType = writable<'hottest' | 'coolest'>('coolest');
+
 // 選択されたアイテムの管理
 export const selectedItem = writable<WeatherRankingItem | null>(null);
 export const showDetailPanel = writable<boolean>(false);

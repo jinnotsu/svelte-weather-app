@@ -57,7 +57,7 @@
     
     // 天気データ（湿度）を取得
     if (!item.humidity) {
-      const weatherDataResult = await weatherDataService.fetchLocationWeatherData(item.city, item.region);
+      const weatherDataResult = await weatherDataService.fetchLocationWeatherData(item.city);
       if (weatherDataResult) {
         // リアクティブ更新のため、weatherData配列を更新
         weatherData.update(data => 

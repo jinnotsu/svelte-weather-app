@@ -59,15 +59,17 @@ export class AIDescriptionService {
       const generatedText = response.text;
       
       if (generatedText) {
+        const title = region && region !== 'undefined' && region.trim() !== '' ? `${city} (${region})` : city;
+        const searchQuery = region && region !== 'undefined' && region.trim() !== '' ? `${city} ${region} 日本` : `${city} 日本`;
         const newInfo: LocationInfo = {
-          title: `${city} (${region})`,
+          title: title,
           extract: generatedText,
-          url: `https://www.google.com/search?q=${encodeURIComponent(`${city} ${region} 日本`)}`,
+          url: `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`,
           isGenerated: true
         };
         
         // キャッシュに保存
-        await this.weatherDataService.setCachedLocationInfo(city, region, newInfo);
+        await this.weatherDataService.setCachedLocationInfo(city, newInfo);
         console.log(`✅ ${city}の説明文を生成・キャッシュ: ${generatedText}`);
         return generatedText;
       }
