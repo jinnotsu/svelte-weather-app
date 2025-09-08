@@ -39,6 +39,9 @@ export class AmedasService {
   private stationsCache: Map<string, AmedasStation> | null = null;
   private cacheExpiry: number = 0;
   private readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24時間
+  
+  // 主要都市の定義（重複を避けるため、一箇所にまとめる）
+  private readonly MAJOR_CITIES = ['44132', '62078', '82182'];
 
   /**
    * 観測所一覧を取得
@@ -184,12 +187,17 @@ export class AmedasService {
     try {
       const observations = await this.getLatestObservations();
       
-    // 気温データがある観測所のみフィルタリング（富士山除外）
-    const validObservations = observations.filter(obs => 
-      obs.temp !== undefined && obs.temp !== null && obs.stationName !== '富士山'
-    );      if (validObservations.length === 0) {
+      // 気温データがある観測所のみフィルタリング（富士山除外）
+      const validObservations = observations.filter(obs => 
+        obs.temp !== undefined && obs.temp !== null && obs.stationName !== '富士山'
+      );
+      
+      if (validObservations.length === 0) {
         throw new Error('有効な気温データが見つかりませんでした');
       }
+
+      // 主要都市のアメダスID
+      const majorCitiesIds = this.MAJOR_CITIES;
 
       // 気温でソート
       const sorted = validObservations.sort((a, b) => {
@@ -198,8 +206,31 @@ export class AmedasService {
         return type === 'hottest' ? tempB - tempA : tempA - tempB;
       });
 
-            // 都道府県名を推定（簡易版）
-      const ranking: TemperatureRanking[] = sorted.slice(0, limit).map((obs, index) => ({
+      // 上位limit件を取得
+      const topRanking = sorted.slice(0, limit);
+
+      // 主要都市のデータを抽出（観測データに含まれている場合のみ）
+      const majorCitiesData = validObservations.filter(obs => 
+        majorCitiesIds.includes(obs.stationId)
+      );
+
+      // 主要都市のデータを必ず含める（重複を避ける）
+      const result = [...topRanking];
+      majorCitiesData.forEach(cityData => {
+        if (!result.some(item => item.stationId === cityData.stationId)) {
+          result.push(cityData);
+        }
+      });
+
+      // 最終的にソート（ランキング順位を正しく計算するため）
+      const finalSorted = result.sort((a, b) => {
+        const tempA = a.temp!;
+        const tempB = b.temp!;
+        return type === 'hottest' ? tempB - tempA : tempA - tempB;
+      });
+
+      // ランキング形式で返す（順位を正しく計算）
+      const ranking: TemperatureRanking[] = finalSorted.map((obs, index) => ({
         rank: index + 1,
         stationName: obs.stationName,
         temperature: obs.temp!,
@@ -212,6 +243,36 @@ export class AmedasService {
     } catch (error) {
       console.error('気温ランキングの作成エラー:', error);
       throw new Error('気温ランキングの作成に失敗しました');
+    }
+  }
+
+  /**
+   * 特定の都市（東京、大阪、福岡）の気温データを取得
+   */
+  async getMajorCitiesTemperature(): Promise<TemperatureRanking[]> {
+    try {
+      const observations = await this.getLatestObservations();
+      
+      const majorCitiesData: TemperatureRanking[] = [];
+
+      this.MAJOR_CITIES.forEach((cityId, index) => {
+        const obs = observations.find(o => o.stationId === cityId);
+        if (obs && obs.temp !== undefined && obs.temp !== null) {
+          majorCitiesData.push({
+            rank: index + 1,
+            stationName: obs.stationName,
+            temperature: obs.temp,
+            humidity: obs.humidity,
+            lat: obs.lat,
+            lon: obs.lon
+          });
+        }
+      });
+
+      return majorCitiesData;
+    } catch (error) {
+      console.error('主要都市の気温データ取得エラー:', error);
+      throw new Error('主要都市の気温データ取得に失敗しました');
     }
   }
 
